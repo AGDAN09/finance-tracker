@@ -1,0 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body { @apply bg-kabut text-malam antialiased; font-variant-numeric: tabular-nums; }
+:focus-visible { outline: 2px solid #F2B84B; outline-offset: 2px; }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
