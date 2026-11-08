@@ -14,14 +14,21 @@ const contoh: Transaksi[] = [
   { id: "a5", tipe: "keluar", nominal: 120000, kategori: "belanja", tanggal: "2026-11-02", catatan: "Buku catatan dan alat tulis" },
 ];
 
+type Isi = Omit<Transaksi, "id">;
+type Budget = Record<string, number>;
+
 type Ctx = {
   data: Transaksi[];
   siap: boolean;
   bulan: string;
   setBulan: (b: string) => void;
-  tambah: (t: Omit<Transaksi, "id">) => void;
+  tambah: (t: Isi) => void;
+  ubah: (id: string, t: Isi) => void;
   hapus: (id: string) => void;
+  budget: Budget;
+  setBudget: (b: Budget) => void;
   buka: () => void;
+  edit: (t: Transaksi) => void;
 };
 
 const TxContext = createContext<Ctx | null>(null);
@@ -34,16 +41,21 @@ export function useTx() {
 
 export default function TransaksiProvider({ children }: { children: React.ReactNode }) {
   const [data, setData, siap] = useLocalStorage<Transaksi[]>("saku:transaksi", contoh);
+  const [budget, setBudget] = useLocalStorage<Budget>("saku:budget", {});
   const [bulan, setBulan] = useState(bulanIni());
   const [terbuka, setTerbuka] = useState(false);
+  const [diedit, setDiedit] = useState<Transaksi | null>(null);
 
-  const tambah = (t: Omit<Transaksi, "id">) => setData((l) => [{ id: crypto.randomUUID(), ...t }, ...l]);
+  const tambah = (t: Isi) => setData((l) => [{ id: crypto.randomUUID(), ...t }, ...l]);
+  const ubah = (id: string, t: Isi) => setData((l) => l.map((x) => (x.id === id ? { id, ...t } : x)));
   const hapus = (id: string) => setData((l) => l.filter((t) => t.id !== id));
+  const buka = () => { setDiedit(null); setTerbuka(true); };
+  const edit = (t: Transaksi) => { setDiedit(t); setTerbuka(true); };
 
   return (
-    <TxContext.Provider value={{ data, siap, bulan, setBulan, tambah, hapus, buka: () => setTerbuka(true) }}>
+    <TxContext.Provider value={{ data, siap, bulan, setBulan, tambah, ubah, hapus, budget, setBudget, buka, edit }}>
       {children}
-      {terbuka && <FormSheet onClose={() => setTerbuka(false)} />}
+      {terbuka && <FormSheet key={diedit?.id ?? "baru"} awal={diedit} onClose={() => setTerbuka(false)} />}
     </TxContext.Provider>
   );
 }

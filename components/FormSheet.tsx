@@ -4,16 +4,16 @@ import { useEffect, useState } from "react";
 import { X } from "lucide-react";
 import { KATEGORI } from "@/lib/kategori";
 import { hariIni, rupiah } from "@/lib/format";
-import type { Tipe } from "@/lib/types";
+import type { Tipe, Transaksi } from "@/lib/types";
 import { useTx } from "./TransaksiProvider";
 
-export default function FormSheet({ onClose }: { onClose: () => void }) {
-  const { tambah, setBulan } = useTx();
-  const [tipe, setTipe] = useState<Tipe>("keluar");
-  const [nominal, setNominal] = useState("");
-  const [kategori, setKategori] = useState("makan");
-  const [tanggal, setTanggal] = useState(hariIni());
-  const [catatan, setCatatan] = useState("");
+export default function FormSheet({ awal, onClose }: { awal: Transaksi | null; onClose: () => void }) {
+  const { tambah, ubah, setBulan } = useTx();
+  const [tipe, setTipe] = useState<Tipe>(awal?.tipe ?? "keluar");
+  const [nominal, setNominal] = useState(awal ? String(awal.nominal) : "");
+  const [kategori, setKategori] = useState(awal?.kategori ?? "makan");
+  const [tanggal, setTanggal] = useState(awal?.tanggal ?? hariIni());
+  const [catatan, setCatatan] = useState(awal?.catatan ?? "");
 
   useEffect(() => {
     const esc = (e: KeyboardEvent) => e.key === "Escape" && onClose();
@@ -30,7 +30,9 @@ export default function FormSheet({ onClose }: { onClose: () => void }) {
     e.preventDefault();
     const n = Number(nominal);
     if (n <= 0 || !tanggal) return;
-    tambah({ tipe, nominal: n, kategori, tanggal, catatan: catatan.trim() });
+    const isi = { tipe, nominal: n, kategori, tanggal, catatan: catatan.trim() };
+    if (awal) ubah(awal.id, isi);
+    else tambah(isi);
     setBulan(tanggal.slice(0, 7));
     onClose();
   };
@@ -38,11 +40,11 @@ export default function FormSheet({ onClose }: { onClose: () => void }) {
   const field = "w-full rounded-xl border border-malam/15 bg-white px-4 py-3 text-base";
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end bg-malam/50 md:items-center md:justify-center" onClick={onClose} role="dialog" aria-modal="true" aria-label="Catat transaksi">
+    <div className="fixed inset-0 z-50 flex items-end bg-malam/50 md:items-center md:justify-center" onClick={onClose} role="dialog" aria-modal="true" aria-label={awal ? "Ubah transaksi" : "Catat transaksi"}>
       <form onClick={(e) => e.stopPropagation()} onSubmit={kirim}
         className="max-h-[92dvh] w-full overflow-y-auto rounded-t-3xl bg-white p-5 pb-[calc(1.25rem+env(safe-area-inset-bottom))] md:max-w-md md:rounded-3xl">
         <div className="flex items-center justify-between">
-          <h2 className="text-lg font-bold">Catat transaksi</h2>
+          <h2 className="text-lg font-bold">{awal ? "Ubah transaksi" : "Catat transaksi"}</h2>
           <button type="button" onClick={onClose} aria-label="Tutup" className="flex h-11 w-11 items-center justify-center rounded-full hover:bg-kabut"><X className="h-5 w-5" /></button>
         </div>
 
@@ -56,7 +58,7 @@ export default function FormSheet({ onClose }: { onClose: () => void }) {
         </div>
 
         <label className="mt-4 block text-sm font-medium">Nominal
-          <input className={`${field} mt-1 text-2xl font-bold`} inputMode="numeric" autoFocus placeholder="0" value={nominal}
+          <input className={`${field} mt-1 text-2xl font-bold`} inputMode="numeric" autoFocus={!awal} placeholder="0" value={nominal}
             onChange={(e) => setNominal(e.target.value.replace(/\D/g, ""))} />
         </label>
         {Number(nominal) > 0 && <p className="mt-1 text-sm text-malam/60">{rupiah(Number(nominal))}</p>}
@@ -79,7 +81,7 @@ export default function FormSheet({ onClose }: { onClose: () => void }) {
         </label>
 
         <button disabled={Number(nominal) <= 0} className="mt-5 min-h-12 w-full rounded-xl bg-malam text-base font-bold text-white disabled:opacity-40">
-          Simpan transaksi
+          {awal ? "Simpan perubahan" : "Simpan transaksi"}
         </button>
       </form>
     </div>
