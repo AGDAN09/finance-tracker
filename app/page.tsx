@@ -48,9 +48,9 @@ export default function Ringkasan() {
         </div>
       </section>
 
-      <section>
+      <section className="rounded-2xl bg-white p-4 shadow-sm ring-1 ring-malam/10">
         <h2 className="font-bold">Arus kas 6 bulan</h2>
-        <div className="mt-2"><ArusKas /></div>
+        <div className="mt-3"><ArusKas /></div>
       </section>
 
       <section>
