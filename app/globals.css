@@ -2,6 +2,35 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --white: 255 255 255;
+  --malam: 27 31 59;
+  --kabut: 238 241 246;
+  --mint-soft: 221 243 235;
+  --koral-soft: 251 230 223;
+}
+
+.dark {
+  --white: 24 28 54;
+  --malam: 232 235 248;
+  --kabut: 12 14 30;
+  --mint-soft: 18 59 48;
+  --koral-soft: 74 31 20;
+  color-scheme: dark;
+}
+
+/* Sidebar dan kartu saldo tetap biru tua di mode gelap */
+.dark aside,
+.dark section.bg-malam {
+  --white: 255 255 255;
+  --malam: 34 40 84;
+}
+
 body { @apply bg-kabut text-malam antialiased; font-variant-numeric: tabular-nums; }
 :focus-visible { outline: 2px solid #F2B84B; outline-offset: 2px; }
+
+.bg-emas { color: #1B1F3B; }
+.bg-mint, .bg-koral { color: #fff; }
+.bg-malam\/50 { background-color: rgb(0 0 0 / 0.5); }
+
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
