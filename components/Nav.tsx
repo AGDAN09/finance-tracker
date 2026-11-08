@@ -42,9 +42,22 @@ export default function Nav() {
             </Link>
           ))}
         </div>
-        <button onClick={buka} className="mt-6 flex items-center justify-center gap-2 rounded-lg bg-emas px-4 py-2.5 text-sm font-bold text-malam">
+          <button onClick={buka} className="mt-6 flex items-center justify-center gap-2 rounded-lg bg-emas px-4 py-2.5 text-sm font-bold text-malam">
           <Plus className="h-4 w-4" /> Catat transaksi
         </button>
+        <div className="mt-auto border-l-2 border-emas/80 pl-3">
+          <p className="text-[10px] font-medium uppercase tracking-widest text-white/40">
+            Crafted by
+          </p>
+
+          <p className="mt-1 text-sm font-semibold tracking-wide text-white/85">
+            Muhammad Agdan Wirayudha
+          </p>
+
+          <p className="mt-1 text-[10px] leading-relaxed text-white/40">
+            Teknik Informatika • Universitas 17 Agustus 1945 Surabaya
+          </p>
+        </div>
       </aside>
     </>
   );

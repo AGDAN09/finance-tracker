@@ -34,6 +34,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 <ThemeToggle />
               </header>
               {children}
+              <footer className="mt-10 text-center text-xs text-malam/50 md:hidden">
+                Dibuat oleh Agdan Wirayudha · Teknik Informatika Untag 25
+              </footer>
             </div>
           </main>
         </TransaksiProvider>
